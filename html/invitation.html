@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+
+            body {
+                display: flex;
+                justify-content: center;
+                align-content: center;
+                font-family:'Courier New', Courier, monospace;
+                background-color: black;
+
+            }
+
+            div {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                background-color: white;
+                width: 586px;
+                height: 885px;
+            }
+
+            div img {
+                align-self: center;
+                margin: 35px;
+                padding: 21px;
+                max-width: 70%;
+                filter: invert(100%);
+            }
+
+            .stamp {
+                position: absolute;
+                right: 0px;
+                bottom: 0px;
+                margin: 20px;
+                padding: 0;
+                filter: grayscale() brightness(0%);
+
+            }
+
+            div p, h4{
+                margin-left: 60px;
+                margin-right: 60px;
+            }
+
+            div h4 {
+                padding: 0;
+                margin-bottom: 0px;    
+            }
+
+            a {
+                font-weight: bold;
+                color: black;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <img src="https://waiscshs-dev.onrender.com/images/logo.svg" alt="Logo">
+            <div>
+                <h4>Your Invited to Join CSHS</h4>
+                <p>You are receiving this email because you have been recognized by the WAIS Computer Science Honor Society and are invited to join!</p>
+                <p>To join fill out the following <a href="https://tinyurl.com/waiscshs">form</a> or visit the <a href="https://waiscshs-dev.onrender.com">website</a>.</p>
+                <p>We will reach out you if you get accepted. If you have any further questions you may contact <a href="">wais.cshs@gmail.com</a> or talk to Mr Wegsheid durring school hours.</p>
+                <p>We hope to see you next meeting!</p>
+                <p>Sincerely,<br>WAIS CSHS</p>
+            </div>
+            <img src="https://drive.google.com/thumbnail?id=1h75WySgBGOm9NYl4uybFSDGEenUGqT2K" alt="" class="stamp">
+        </div>
+    </body>
+</html>
