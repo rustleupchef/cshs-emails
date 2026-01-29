@@ -43,7 +43,11 @@ const server = http.createServer((req, res) => {
                 res.end(JSON.stringify({status: "error", message: error.message}));
             }
         });
-    } else {
+    } else if (req.url === "/invite" && req.method === 'GET') {
+        const html = fs.readFileSync("html/invite.html", "utf-8");
+        res.writeHead(200, {"Content-Type": "text/html"});
+        res.end(html);
+    }else {
         res.writeHead(404, {"Content-Type": "application/json"});
         res.end(JSON.stringify({status: "Page Not Found", message: "The page you are looking for could not be found"}));
     }
