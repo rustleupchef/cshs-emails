@@ -4,6 +4,7 @@ import fs from "fs";
 import http from "http";
 
 const invitationStr = fs.readFileSync("html/invitation.html", "utf-8");
+const meetingStr = fs.readFileSync("html/meeting.html", "utf-8");
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -43,11 +44,36 @@ const server = http.createServer((req, res) => {
                 res.end(JSON.stringify({status: "error", message: error.message}));
             }
         });
-    } else if (req.url === "/invite" && req.method === 'GET') {
-        const html = fs.readFileSync("html/invite.html", "utf-8");
-        res.writeHead(200, {"Content-Type": "text/html"});
-        res.end(html);
-    }else {
+    } else if (req.url === "/meeting" && req.method === "POST") {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body);
+                transporter.sendMail({
+                    from: "wais.cshs@gmail.com",
+                    to: data.people,
+                    subject: "Invitation to CSHS",
+                    html: meetingStr,
+                }, (error, info) => {
+                    if (error) {
+                        res.writeHead(500, {"Content-Type": "application/json"});
+                        res.end(JSON.stringify({status: "error", message: error.message}));
+                    } else {
+                        res.writeHead(200, {"Content-Type": "application/json"});
+                        res.end(JSON.stringify({status: "success", message: "Email sent"}));
+                    }
+                });
+
+            } catch (error) {
+                res.writeHead(400, {"Content-Type" : "application/json"});
+                res.end(JSON.stringify({status: "error", message: error.message}));
+            }
+        });
+    } else {
         res.writeHead(404, {"Content-Type": "application/json"});
         res.end(JSON.stringify({status: "Page Not Found", message: "The page you are looking for could not be found"}));
     }
