@@ -2,6 +2,7 @@ import nodemailer from "nodemailer"
 import "dotenv/config"
 import fs from "fs";
 import http from "http";
+import { URL } from "url";
 
 const invitationStr = fs.readFileSync("html/invitation.html", "utf-8");
 const meetingStr = fs.readFileSync("html/meeting.html", "utf-8");
@@ -15,7 +16,16 @@ const transporter = nodemailer.createTransport({
 });
 
 const server = http.createServer((req, res) => {
-    if (req.url === "/invite" && req.method === 'POST') {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const key = url.searchParams.get("key");
+
+    if (key !== process.env.key) {
+        res.writeHead(403, {"Content-Type": "application/json"});
+        res.end(JSON.stringify({status: "Forbidden", message: "You do not have permission to access this resource"}));
+        return;
+    }
+
+    if (url.pathname === "/invite" && req.method === 'POST') {
         let body = '';
         req.on('data', chunk => {
             body += chunk.toString();
@@ -44,7 +54,7 @@ const server = http.createServer((req, res) => {
                 res.end(JSON.stringify({status: "error", message: error.message}));
             }
         });
-    } else if (req.url === "/meeting" && req.method === "POST") {
+    } else if (url.pathname === "/meeting" && req.method === "POST") {
         let body = '';
         req.on('data', chunk => {
             body += chunk.toString();
