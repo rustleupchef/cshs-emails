@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const util = require("util");
 
+import email from "./email.html";
 
 export default {
 	async fetch(request, env, ctx) {
@@ -65,9 +66,14 @@ export default {
 			} else {
 				return new Response("Needs application json format");
 			}
-		} else {
-			return new Response("Invalid Path");
 		}
 
+		if (method == "GET" && path == "/send") {
+			return new Response(email, {
+				headers : {
+					"Content-Type": "text/html"
+				}
+			});
+		}
 	},
 };
