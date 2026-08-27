@@ -512,7 +512,7 @@
             const checked = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
             if (checked.length === 0) return [];
             const matches = groups.filter(g => checked.some(category => g[category]));
-            return [...new Set(matches.map(g => g.person))];
+            return [...new Set(matches.map(g => g.name ? g.name : g.person))];
         }
 
         function updateRecipientPreview() {
@@ -546,13 +546,15 @@
                     const values = data.values.splice(1);
                     for (let row of values) {
                         let person = row[0];
-                        let officer = row[1] == "TRUE";
-                        let member = row[2] == "TRUE";
-                        let candidate = row[3] == "TRUE";
-                        let competition = row[4] == "TRUE";
+                        let name = row[1];
+                        let officer = row[2] == "TRUE";
+                        let member = row[3] == "TRUE";
+                        let candidate = row[4] == "TRUE";
+                        let competition = row[5] == "TRUE";
 
                         groups.push({
                             person,
+                            name,
                             officer,
                             member,
                             candidate,
