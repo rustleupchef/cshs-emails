@@ -15,8 +15,9 @@ export default {
 			}
 		});
 
+		const url = new URL(request.url);
 		const method = request.method;
-		const path = new URL(request.url).pathname;
+		const path = url.pathname;
 
 		const map = new Map();
 		map.set("/invite", {path: "join", subject: "CSHS Invitation"});
@@ -68,12 +69,22 @@ export default {
 			}
 		}
 
-		if (method == "GET" && path == "/send") {
+		if (method === "GET" && path === "/send") {
 			return new Response(email, {
 				headers : {
 					"Content-Type": "text/html"
 				}
 			});
 		}
+
+		if (method == "GET" && path == "/endpoints") {
+			return new Response(JSON.stringify([...map.keys()]), {
+				headers : {
+					"Content-Type" : "application/json"
+				}
+			});
+		}
+
+		return Response.redirect(new URL("/send", url.origin));
 	},
 };

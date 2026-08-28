@@ -444,14 +444,6 @@
                 <div class="field">
                     <label class="field-label">Version</label>
                     <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="version" value="invite" checked>
-                            <span>Invite</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="version" value="custom">
-                            <span>Custom</span>
-                        </label>
                     </div>
                 </div>
 
@@ -535,6 +527,53 @@
         }
 
         document.addEventListener("DOMContentLoaded", async function() {
+            fetch("/endpoints")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let availableCheck = true;
+                    const radioGroup = document.querySelector(".radio-group");
+                    const endpoints = data.map(word => word[1].toUpperCase() + word.slice(2));
+                    for (const endpoint of endpoints) {
+                        const label = document.createElement("label");
+                        label.className = "radio-option";
+
+                        const input = document.createElement("input");
+                        input.type = "radio";
+                        input.name = "version";
+                        input.value = endpoint.toLowerCase();
+
+                        if (input.value !== "custom" && availableCheck) {
+                            input.checked = true;
+                            availableCheck = false;
+                        }
+
+                        const span = document.createElement("span");
+                        span.textContent = endpoint;
+
+                        label.appendChild(input);
+                        label.appendChild(span);
+
+                        radioGroup.appendChild(label);
+
+                        document.querySelectorAll('input[name="version"]').forEach(radio => {
+                            radio.addEventListener('change', function() {
+                                document.getElementById('customFields').style.display = this.value === 'custom' ? 'block' : 'none';
+                            });
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Fetch operation failed:", error);
+                    const loadingEl = document.getElementById('loadingStatus');
+                    loadingEl.textContent = "Couldn't load the roster: " + error.message + ". Try refreshing the page.";
+                    loadingEl.classList.add('is-error');
+                });
+
             fetch("https://sheets.wais-cshs.workers.dev/People")
                 .then(response => {
                     if (!response.ok) {
@@ -575,12 +614,6 @@
 
             document.querySelectorAll('input[name="category"]').forEach(cb => {
                 cb.addEventListener('change', updateRecipientPreview);
-            });
-
-            document.querySelectorAll('input[name="version"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    document.getElementById('customFields').style.display = this.value === 'custom' ? 'block' : 'none';
-                });
             });
 
             document.getElementById('togglePreview').addEventListener('click', function() {
