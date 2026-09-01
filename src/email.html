@@ -504,7 +504,7 @@
             const checked = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
             if (checked.length === 0) return [];
             const matches = groups.filter(g => checked.some(category => g[category]));
-            return [...new Set(matches.map(g => g.name ? g.name : g.person))];
+            return [...new Set(matches.map(g => g.person))];
         }
 
         function updateRecipientPreview() {
